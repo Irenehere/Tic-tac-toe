@@ -40,6 +40,7 @@ class TicTacToeGame(Game):
         b.pieces = np.copy(board)
         move = (int(action/self.n), action%self.n)
         b.execute_move(move, player)
+        print(str(b.pieces)+str(player))
         return (b.pieces, -player)
 
     def getValidMoves(self, board, player):

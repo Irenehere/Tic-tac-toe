@@ -1,6 +1,6 @@
 import Arena
 from MCTS import MCTS
-from tictactoe.TicTacToeGame import TicTacToeGame
+from tictactoe_v1.TicTacToeGame import ProbTicTacToeGame as TicTacToeGame
 from tictactoe.TicTacToePlayers import *
 from tictactoe.keras.NNet import NNetWrapper as NNet
 

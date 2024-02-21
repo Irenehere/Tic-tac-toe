@@ -3,10 +3,10 @@ import logging
 import coloredlogs
 
 from Coach import Coach
-from tictactoe_v1.TicTacToeGame import ProbTicTacToeGame as TicTacToeGame
-from tictactoe_v1.keras.NNet import NNetWrapper as nn
-# from tictactoe_v2.TicTacToeGame import TicTacToeGame_v2 as TicTacToeGame
-# from tictactoe_v2.keras.NNet import NNetWrapper as nn
+# from tictactoe_v1.TicTacToeGame import TicTacToeGame_v1 as TicTacToeGame
+# from tictactoe_v1.keras.NNet import NNetWrapper as nn
+from tictactoe_v2.TicTacToeGame import TicTacToeGame_v2 as TicTacToeGame
+from tictactoe_v2.keras.NNet import NNetWrapper as nn
 from utils import *
 
 log = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ args = dotdict({
     'arenaCompare': 40,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
-    'checkpoint': './model_v1/',
+    'checkpoint': './model_v2/',
     'load_model': False,
     'load_folder_file': ('./temp/','checkpoint_4.pth.tar'),  #('/dev/models/8x100x50','best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,

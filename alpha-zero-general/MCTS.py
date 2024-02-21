@@ -71,8 +71,9 @@ class MCTS():
         Returns:
             v: the negative of the value of the current canonicalBoard
         """
-
         s = self.game.stringRepresentation(canonicalBoard)
+
+        
 
         if s not in self.Es:
             self.Es[s] = self.game.getGameEnded(canonicalBoard, 1)
@@ -83,7 +84,13 @@ class MCTS():
         if s not in self.Ps:
             # leaf node
             self.Ps[s], v = self.nnet.predict(canonicalBoard)
+
+            # print(s)
+            # print(len(self.Ps[s]))
+            # print(v)
             valids = self.game.getValidMoves(canonicalBoard, 1)
+
+            # print(len(valids))
             self.Ps[s] = self.Ps[s] * valids  # masking invalid moves
             sum_Ps_s = np.sum(self.Ps[s])
             if sum_Ps_s > 0:
