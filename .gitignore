@@ -1,0 +1,19 @@
+*.pyc
+.DS_Store
+
+/temp/
+/.project
+/.pydevproject
+
+# checkpoint
+checkpoints/
+
+# For PyCharm users
+.idea/
+
+model_*/
+results_*
+*.log
+
+setup_env.sh
+test_all_games.py
