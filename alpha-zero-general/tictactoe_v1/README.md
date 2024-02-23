@@ -40,7 +40,7 @@ This unit test script includes test cases for checking the board size, action si
 pytest test_prob_tictactoe.py
 ```
 
-- Regression tests 
+
 
 - Integration tests
 
@@ -49,4 +49,11 @@ Integration tests focus on testing the interaction between different components 
 pytest test_prob_tictactoe.py
 ```
 
+- Regression tests 
 
+This is a regression test to automatically test all combinations of games and ML frameworks. Each test plays two quick games using an untrained neural network (randomly initialized) against a random player.
+
+To run regression test, run
+```bash
+pytest test_regression.py
+```

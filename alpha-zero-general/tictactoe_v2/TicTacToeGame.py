@@ -1,10 +1,12 @@
 from __future__ import print_function
 import sys
-sys.path.append('..')
-from Game import Game
-from .TicTacToeLogic import Board
 import numpy as np
 import random
+import copy
+from TicTacToeLogic import Board
+sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/alpha-zero-general')
+from Game import Game
+
 
 """
 Variation of the TicTacToe game with the following features:
@@ -27,13 +29,13 @@ class TicTacToeGame_v2(Game):
         # self.energy_size = energy_size
         # self.initial_energy = initial_energy
 
-        self.total_energy = energy_states * initial_energy
+        self.total_energy = (energy_states-1) * initial_energy
         self.initial_energy = initial_energy
-        self.enery_states = energy_states
+        self.energy_size = energy_states
 
     def getInitBoard(self):
         # return initial board 
-        b = Board(self.n, self.initial_energy, self.enery_states)
+        b = Board(self.n, self.initial_energy, self.energy_size)
         return b
 
     def getBoardSize(self):
@@ -42,7 +44,7 @@ class TicTacToeGame_v2(Game):
 
     def getActionSize(self):
         # return number of actions
-        return self.n*self.n*self.enery_states + 1
+        return self.n*self.n*self.energy_size + 1
 
     def getNextState(self, board, player, action):
         x = int(action / (self.n * self.energy_size))
@@ -54,21 +56,23 @@ class TicTacToeGame_v2(Game):
         if action == self.n * self.n * self.energy_size:
             return (board, -player)
 
-        print("action: ", action)
-        print("energy_points[player]: ", self.energy_points[player])
-        print("energy_used: ", energy_used)
-        print("valid moves: ", self.getValidMoves(board, player))
+        # print("action: ", action)
+        # print("energy_points[player]: ", board.energy_points[player])
+        # print("energy_used: ", energy_used)
+        # print("valid moves: ", self.getValidMoves(board, player))
         
      
         # self.energy_points[player] = self.energy_points[player] - energy_used   
 
-        b = Board(self.n)
-        b.pieces = np.copy(board)
-       
+        b = copy.deepcopy(board)
+        # # deep copy board 
+        # b = Board(self.n)
+
+        
         move = (x,y, energy_used)
 
         # Normalize the energy used to from 0 to 1
-        normalized_energy = energy_used / self.energy_states
+        normalized_energy = energy_used / self.energy_size
 
         # Apply the new rules
         if normalized_energy == 0:
@@ -88,7 +92,8 @@ class TicTacToeGame_v2(Game):
                 random.shuffle(adjacent_moves)
                 adj_move = adjacent_moves[0]
                 if 0 <= adj_move[0] < self.n and 0 <= adj_move[1] < self.n and b.pieces[adj_move] == 0:
-                    b.execute_move(adj_move, player)
+                    move_with_energy = (adj_move[0], adj_move[1], energy_used)
+                    b.execute_move(move_with_energy, player)
 
         else:
             prob_accept = 1/9 + 6/9 * normalized_energy
@@ -108,14 +113,19 @@ class TicTacToeGame_v2(Game):
                 random.shuffle(adjacent_moves)
                 adj_move = adjacent_moves[0]
                 if 0 <= adj_move[0] < self.n and 0 <= adj_move[1] < self.n and b.pieces[adj_move] == 0:
-                    b.execute_move(adj_move, player)
+                    adj_move_with_energy = (adj_move[0], adj_move[1], energy_used)
+                    b.execute_move(adj_move_with_energy, player)
+                    # b.execute_move(adj_move, player)
         return (b, -player)
 
     def getValidMoves(self, board, player):
         # return a fixed size binary vector
         valids = [0]*self.getActionSize()
-        b = Board(self.n)
-        b.pieces = np.copy(board)
+
+        b = copy.deepcopy(board)
+
+        # b = Board(self.n)
+        # b.pieces = np.copy(board)
         legalMoves =  b.get_legal_moves(player)
         if len(legalMoves)==0:
             valids[-1]=1
@@ -129,8 +139,9 @@ class TicTacToeGame_v2(Game):
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         # player = 1
-        b = Board(self.n)
-        b.pieces = np.copy(board)
+        # b = Board(self.n)
+        # b.pieces = np.copy(board)
+        b = copy.deepcopy(board)
 
         if b.is_win(player):
             return 1
@@ -143,16 +154,19 @@ class TicTacToeGame_v2(Game):
 
     def getCanonicalForm(self, board, player):
         # return state if player==1, else return -state if player==-1
+        # print("board type", type(board))
 
         if player == 1:
 
-            print("board type", type(board))
+            # print("board type", type(board))
             return board
         
         elif player == -1:
-            print("board type", type(board))
-            new_board = np.copy(board)
-            new_board.piece = -1 * board.piece
+            # print("board type", type(board))
+
+            new_board = copy.deepcopy(board)
+            # new_board = np.copy(board)
+            new_board.pieces = -1 * board.pieces
             new_board.energy_points = {1: board.energy_points[-1], -1: board.energy_points[1]}
             return new_board
     
@@ -162,7 +176,7 @@ class TicTacToeGame_v2(Game):
         assert(len(pi) == self.getActionSize())  # 1 for pass
 
 
-        pi_board = np.reshape(pi[:-1], (self.n, self.n, self.energy_states))
+        pi_board = np.reshape(pi[:-1], (self.n, self.n, self.energy_size))
         l = []
 
         for i in range(1, 5):
@@ -181,7 +195,7 @@ class TicTacToeGame_v2(Game):
 
     @staticmethod
     def display(board):
-        n = board.shape[0]
+        n = board.pieces.shape[0]
 
         print("   ", end="")
         for y in range(n):
@@ -194,7 +208,7 @@ class TicTacToeGame_v2(Game):
         for y in range(n):
             print(y, "|",end="")    # print the row #
             for x in range(n):
-                piece = board[y][x]    # get the piece to print
+                piece = board.pieces[y][x]    # get the piece to print
                 if piece == -1: print("X ",end="")
                 elif piece == 1: print("O ",end="")
                 else:

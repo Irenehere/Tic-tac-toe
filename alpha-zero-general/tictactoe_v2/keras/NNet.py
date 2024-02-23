@@ -42,10 +42,16 @@ class NNetWrapper(NeuralNet):
         examples: list of examples, each example is of form (board, pi, v)
         """
         input_boards, target_pis, target_vs = list(zip(*examples))
-        input_boards = np.asarray(input_boards)
+
+        batched_boards =  np.asarray([board.pieces for board in input_boards])
+        # input_boards = np.asarray(input_boards.pieces)
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
-        self.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = args.batch_size, epochs = args.epochs)
+
+        batched_energies =  np.asarray([[board.energy_points[1], board.energy_points[-1]] for board in input_boards])
+        # input_energies = np.asarray([input_boards.energy_points[1], input_boards.energy_points[-1]])
+
+        self.nnet.model.fit(x = [batched_boards, batched_energies], y = [target_pis, target_vs], batch_size = args.batch_size, epochs = args.epochs)
 
     def predict(self, board):
         """
@@ -55,10 +61,15 @@ class NNetWrapper(NeuralNet):
         start = time.time()
 
         # preparing input
-        board = board[np.newaxis, :, :]
+        board_pieces = board.pieces[np.newaxis, :, :]
+        board_energies = np.asarray([board.energy_points[1], board.energy_points[-1]])
+        board_energies = board_energies[np.newaxis, :]
 
         # run
-        pi, v = self.nnet.model.predict(board, verbose=False)
+
+        # print("board_pieces: ", board_pieces)
+        # print("board_energies: ", board_energies)
+        pi, v = self.nnet.model.predict((board_pieces, board_energies), verbose=False)
 
         #print('PREDICTION TIME TAKEN : {0:03f}'.format(time.time()-start))
         return pi[0], v[0]
