@@ -21,7 +21,7 @@
 import unittest
 
 import sys
-sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/alpha-zero-general/')
+sys.path.append('..')
 
 import Arena
 from MCTS import MCTS

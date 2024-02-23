@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import random
 import sys
-sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/alpha-zero-general/tictactoe_v2')
+sys.path.append('..')
 from TicTacToeGame import TicTacToeGame_v2, Board
 
 def test_init():

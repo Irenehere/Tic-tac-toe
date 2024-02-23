@@ -4,7 +4,7 @@ import numpy as np
 import random
 import copy
 from TicTacToeLogic import Board
-sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/alpha-zero-general')
+sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/')
 from Game import Game
 
 

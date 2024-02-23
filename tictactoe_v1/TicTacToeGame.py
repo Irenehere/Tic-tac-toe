@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 from .TicTacToeLogic import myBoard as Board
-sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/alpha-zero-general/')
+sys.path.append('/home/jupyter-yguoar/Tic-tac-toe/')
 # from tictactoe.TicTacToeGame import TicTacToeGame 
 from Game import Game
 import numpy as np
